@@ -6,34 +6,66 @@ import {
     Link
 } from 'react-router-dom'
 import Counter from './Counter';
+import Topics from './topics';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import AppBar from 'material-ui/AppBar';
+import Drawer from 'material-ui/Drawer';
+import MenuItem from 'material-ui/MenuItem';
 
 class App extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false
+        };
+
+        this.handleToggle = this.handleToggle.bind(this);
+    };
+
+    handleToggle() { this.setState({ open: !this.state.open }) };
+
     render() {
         return (
-            <Router>
-                <div>
-                    <ul>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/about">About</Link></li>
-                        <li><Link to="/counter">Counter</Link></li>
-                        <li><Link to="/topics">Topics</Link></li>
-                    </ul>
+            <div>
+                <MuiThemeProvider>
+                    <div>
+                        <AppBar
+                            title="Title"
+                            iconClassNameRight="muidocs-icon-navigation-expand-more"
+                            onLeftIconButtonTouchTap={this.handleToggle}
+                        />
+                        <Router>
+                            <div>
+                                <Drawer
+                                    open={this.state.open}
+                                    docked={false}
+                                    width={200}
+                                    onRequestChange={(open) => this.setState({ open })}>
+                                    <div>
+                                        <MenuItem onTouchTap={() => { this.setState({ open: false }); }} containerElement={<Link to="/" />}>Home</MenuItem>
+                                        <MenuItem onTouchTap={() => { this.setState({ open: false }); }} containerElement={<Link to="/about" />}>About</MenuItem>
+                                        <MenuItem onTouchTap={() => { this.setState({ open: false }); }} containerElement={<Link to="/counter" />}>Counter</MenuItem>
+                                        <MenuItem onTouchTap={() => { this.setState({ open: false }); }} containerElement={<Link to="/topics" />}>Topics</MenuItem>
+                                    </div>
+                                </Drawer>
 
-                    <hr />
+                                <Route exact path="/" component={Home} />
+                                <Route path="/about" component={Address} />
+                                <Route path="/topics" component={Topics} />
+                                <Route path="/counter" component={Counter} />
+                            </div>
+                        </Router>
+                    </div>
 
-                    <Route exact path="/" component={Home} />
-                    <Route path="/about" component={Address} />
-                    <Route path="/topics" component={NotFound} />
-                    <Route path="/counter" component={Counter} />
-                </div>
-            </Router>
+                </MuiThemeProvider>
+
+            </div>
         )
     }
 }
 
 const Home = () => <h1>Hello from Home!</h1>
 const Address = () => <h1>We are located at 56410 Montabaur Germany.</h1>
-const NotFound = () => (
-    <h1>404.. This page is not found!</h1>)
 
 export default App
